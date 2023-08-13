@@ -1,0 +1,38 @@
+name: Build Flutter Web App
+
+on:
+  workflow_dispatch:
+    inputs:
+      flutter-channel:
+        description: 'Flutter channel (e.g., stable)'
+        required: true
+  push:
+    branches:
+      - master
+
+jobs:
+  build:
+    name: Build Web App
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Set up Flutter
+      uses: subosito/flutter-action@v2
+      with:
+        flutter-version: '3.7.0'  # Use a version compatible with web support
+        channel: 'stable'
+
+    - name: Install dependencies
+      run: flutter upgrade && flutter pub get
+
+    - name: Build Web App
+      run: flutter build web
+
+    - name: Upload Web App artifact
+      uses: actions/upload-artifact@v2
+      with:
+        name: web-release
+        path: build/web
