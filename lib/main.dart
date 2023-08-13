@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:flutter_markdown/flutter_markdown.dart';
+import 'package:flutter/services.dart';
+
 
 void main() => runApp(ChikkuGPTApp());
 
@@ -56,16 +58,35 @@ class _ChatScreenState extends State<ChatScreen> {
             child: ListView.builder(
               itemCount: _messages.length,
               itemBuilder: (context, index) {
-                return ListTile(
-                  title: _messages[index].isUser
-                      ? Align(
-                      alignment: Alignment.topRight,
-                      child: MarkdownBody(data: _messages[index].content))
-                      : Align(
-                      alignment: Alignment.topLeft,
-                      child: MarkdownBody(data: _messages[index].content)),
+                final message = _messages[index];
+                final messageContent = message.content;
+
+                final messageContainer = Container(
+                  margin: EdgeInsets.symmetric(vertical: 5.0, horizontal: 10.0),
+                  padding: EdgeInsets.all(10.0),
+                  decoration: BoxDecoration(
+                    color: message.isUser ? Colors.blue : Colors.grey[300],
+                    borderRadius: BorderRadius.circular(10.0),
+                  ),
+                  child: GestureDetector(
+                    onLongPress: () {
+                      Clipboard.setData(ClipboardData(text: messageContent));
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(content: Text('Copied to clipboard')),
+                      );
+                    },
+                    child: Align(
+                      alignment: message.isUser ? Alignment.topRight : Alignment.topLeft,
+                      child: MarkdownBody(data: messageContent),
+                    ),
+                  ),
                 );
+
+                return messageContainer;
               },
+
+
+
             ),
           ),
           Padding(
