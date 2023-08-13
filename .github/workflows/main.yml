@@ -6,6 +6,9 @@ on:
       flutter-channel:
         description: 'Flutter channel (e.g., stable)'
         required: true
+  push:
+    branches:
+      - master
 
 jobs:
   build:
