@@ -42,7 +42,7 @@ class _ChatScreenState extends State<ChatScreen> {
     final response = await http.get(Uri.parse('https://chkikkugpt.onrender.com/predict?prompt=$text'));
     final responseData = json.decode(response.body);
     setState(() {
-      _messages.add(Message(content: responseData['response'], isUser: false, timestamp: DateTime.now()));
+      _messages.add(Message(content: responseData, isUser: false, timestamp: DateTime.now()));
     });
   }
 
